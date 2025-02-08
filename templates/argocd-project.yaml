@@ -20,7 +20,7 @@ spec:
   clusterResourceWhitelist:
     - group: '*'
       kind: 'Namespace'
-    {{- range $resource : $spec.clusterResourceWhitelist | default list }}
+    {{- range $resource := $spec.clusterResourceWhitelist | default list }}
     - group: {{ $resource.group }}
       kind: {{ $resource.kind }}
     {{- end }}
