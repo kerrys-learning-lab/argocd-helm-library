@@ -1,0 +1,56 @@
+{{- range $app, $spec := .Values.argocd.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $spec.project }}--{{ $app }}
+  namespace: {{ $spec.namespace | default "argocd" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $spec.project }}
+  {{- if $spec.source }}
+  source:
+    repoURL: {{ $spec.source.repoURL }}
+    targetRevision: {{ $spec.source.targetRevision }}
+    {{- if $spec.source.chart -}}
+    chart: {{ $spec.source.chart }}
+    {{- else }}
+    path: {{ $spec.source.path | required "One of source.path or source.chart is required" }}
+    {{- end }}
+    {% if 'helm' in $spec.source %}
+    helm:
+      {{ $spec.source.helm | to_yaml | indent(6, first=False) }}
+    {% endif %}
+  {{- else }}
+  sources:
+  {{- range $src := $spec.sources }}
+    - repoURL: {{ $src.repoURL }}
+      targetRevision: {{ $src.targetRevision }}
+      {{- if $src.chart -}}
+      chart: {{ $src.chart }}
+      {{- else }}
+      path: {{ $src.path | required "One of source.path or source.chart is required" }}
+      {{- end }}
+      {% if 'helm' in $src %}
+      helm:
+        {{ $src.helm | to_yaml | indent(6, first=False) }}
+      {% endif %}
+  {{- end }}
+  destination:
+    name: {{ $spec.destination.name }}
+    namespace: {{ $spec.destination.namespace }}
+
+  {{- if not eq ($spec.autoSync | default "empty") "false" }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+      - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true
+  {{- end }}

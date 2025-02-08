@@ -1,0 +1,27 @@
+{{- range $project, $spec := .Values.argocd.projects }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ $project }}
+  namespace: {{ $spec.namespace | default "argocd" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: {{ $spec.description | default('TBP') }}
+  sourceRepos:
+    - '*'
+  destinations:
+    {{- range $dest := $spec.destinations }}
+    - namespace: {{ $spec.destination.namespace }}
+      name: {{ $spec.destination.name | default('in-cluster') }}
+      server: {{ $spec.destination.server | default('https://kubernetes.default.svc') }}
+    {{- end }}
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: 'Namespace'
+    {{- range $resource : $spec.clusterResourceWhitelist | default list }}
+    - group: {{ $resource.group }}
+      kind: {{ $resource.kind }}
+    {{- end }}
+{{- end }}
