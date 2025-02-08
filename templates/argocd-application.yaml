@@ -13,35 +13,36 @@ spec:
   source:
     repoURL: {{ $spec.source.repoURL }}
     targetRevision: {{ $spec.source.targetRevision }}
-    {{- if $spec.source.chart -}}
+    {{- if $spec.source.chart }}
     chart: {{ $spec.source.chart }}
     {{- else }}
     path: {{ $spec.source.path | required "One of source.path or source.chart is required" }}
     {{- end }}
     {% if 'helm' in $spec.source %}
     helm:
-      {{ $spec.source.helm | to_yaml | indent(6, first=False) }}
+      {{- $spec.source.helm | toYaml | nindent 6 }}
     {% endif %}
   {{- else }}
   sources:
   {{- range $src := $spec.sources }}
     - repoURL: {{ $src.repoURL }}
       targetRevision: {{ $src.targetRevision }}
-      {{- if $src.chart -}}
+      {{- if $src.chart }}
       chart: {{ $src.chart }}
       {{- else }}
       path: {{ $src.path | required "One of source.path or source.chart is required" }}
       {{- end }}
       {% if 'helm' in $src %}
       helm:
-        {{ $src.helm | to_yaml | indent(6, first=False) }}
+        {{- $src.helm | toYaml | nindent 8 }}
       {% endif %}
+  {{- end }}
   {{- end }}
   destination:
     name: {{ $spec.destination.name }}
     namespace: {{ $spec.destination.namespace }}
 
-  {{- if not eq ($spec.autoSync | default "empty") "false" }}
+  {{- if not (eq ($spec.autoSync | default "empty") "false") }}
   syncPolicy:
     automated:
       prune: true
@@ -54,3 +55,4 @@ spec:
       - RespectIgnoreDifferences=true
       - ApplyOutOfSyncOnly=true
   {{- end }}
+{{- end }}
