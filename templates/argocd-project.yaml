@@ -8,14 +8,14 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  description: {{ $spec.description | default('TBP') }}
+  description: {{ $spec.description | default "TBP" }}
   sourceRepos:
     - '*'
   destinations:
     {{- range $dest := $spec.destinations }}
     - namespace: {{ $spec.destination.namespace }}
-      name: {{ $spec.destination.name | default('in-cluster') }}
-      server: {{ $spec.destination.server | default('https://kubernetes.default.svc') }}
+      name: {{ $spec.destination.name | default "in-cluster" }}
+      server: {{ $spec.destination.server | default "https://kubernetes.default.svc" }}
     {{- end }}
   clusterResourceWhitelist:
     - group: '*'
