@@ -11,6 +11,7 @@ parameters:
    {{ $name }}: {{ $value }}
    {{- end }}
 {{- end }}
+reclaimPolicy: {{ $spec.reclaimPolicy | default "Delete" }}
 volumeBindingMode: {{ $spec.volumeBindingMode | default "Immediate" }}
 allowVolumeExpansion: {{ $spec.allowVolumeExpansion | default true }}
 {{- if $spec.mountOptions }}
