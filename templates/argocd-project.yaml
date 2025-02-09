@@ -12,6 +12,8 @@ spec:
   sourceRepos:
     - '*'
   destinations:
+    - name: in-cluster
+      namespace: argocd
     {{- range $dest := $spec.destinations }}
     - namespace: {{ $dest.namespace }}
       name: {{ $dest.name | default "in-cluster" }}
