@@ -4,7 +4,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: {{ $project }}
-  namespace: {{ $spec.namespace | default "argocd" }}
+  namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
