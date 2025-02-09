@@ -22,7 +22,7 @@ spec:
     - group: '*'
       kind: 'Namespace'
     {{- range $resource := $spec.clusterResourceWhitelist | default list }}
-    - group: {{ $resource.group }}
+    - group: {{ $resource.group | default "*" | quote }}
       kind: {{ $resource.kind }}
     {{- end }}
 {{- end }}
