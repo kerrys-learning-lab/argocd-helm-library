@@ -1,6 +1,6 @@
 {{- range $app, $spec := .Values.argocd.applications }}
 ---
-apiVersion: argoproj.io/v1alpha1
+apiVersion: v1alpha1
 kind: Application
 metadata:
   name: {{ $spec.project | required ".project is required" }}--{{ $app }}
