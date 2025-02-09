@@ -7,7 +7,7 @@ metadata:
 provisioner: {{ $spec.provisioner }}
 {{- if $spec.parameters }}
 parameters:
-   {{- range $name, value := $spec.parameters }}
+   {{- range $name, $value := $spec.parameters }}
    {{ $name }}: {{ $value }}
    {{- end }}
 {{- end }}
