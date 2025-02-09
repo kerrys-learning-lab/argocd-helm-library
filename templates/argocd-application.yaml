@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ $spec.project }}--{{ $app }}
+  name: {{ $spec.project | required ".project is required" }}--{{ $app }}
   namespace: {{ $spec.namespace | default "argocd" }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -18,10 +18,10 @@ spec:
     {{- else }}
     path: {{ $spec.source.path | required "One of source.path or source.chart is required" }}
     {{- end }}
-    {% if 'helm' in $spec.source %}
+    {{- if $spec.source.helm }}
     helm:
       {{- $spec.source.helm | toYaml | nindent 6 }}
-    {% endif %}
+    {{- end }}
   {{- else }}
   sources:
   {{- range $src := $spec.sources }}
@@ -32,10 +32,10 @@ spec:
       {{- else }}
       path: {{ $src.path | required "One of source.path or source.chart is required" }}
       {{- end }}
-      {% if 'helm' in $src %}
+      {{- if $src.helm }}
       helm:
         {{- $src.helm | toYaml | nindent 8 }}
-      {% endif %}
+      {{- end }}
   {{- end }}
   {{- end }}
   destination:

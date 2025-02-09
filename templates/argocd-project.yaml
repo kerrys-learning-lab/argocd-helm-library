@@ -13,9 +13,9 @@ spec:
     - '*'
   destinations:
     {{- range $dest := $spec.destinations }}
-    - namespace: {{ $spec.destination.namespace }}
-      name: {{ $spec.destination.name | default "in-cluster" }}
-      server: {{ $spec.destination.server | default "https://kubernetes.default.svc" }}
+    - namespace: {{ $dest.namespace }}
+      name: {{ $dest.name | default "in-cluster" }}
+      server: {{ $dest.server | default "https://kubernetes.default.svc" }}
     {{- end }}
   clusterResourceWhitelist:
     - group: '*'
