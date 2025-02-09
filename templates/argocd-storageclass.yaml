@@ -17,7 +17,7 @@ allowVolumeExpansion: {{ $spec.allowVolumeExpansion | default true }}
 {{- if $spec.mountOptions }}
 mountOptions:
     {{- range $name, $value := $spec.mountOptions }}
-    {{- if eq $value "present" }}
+    {{- if eq toString($value) "present" }}
     - {{ $name }}
     {{- else }}
     - {{ $name }}={{ $value }}
