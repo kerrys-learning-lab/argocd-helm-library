@@ -1,0 +1,26 @@
+{{- range $sc, $spec := .Values.argocd.storageclasses }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ $sc }}
+provisioner: {{ $spec.provisioner }}
+{{- if $spec.parameters }}
+parameters:
+   {{- range $name, value := $spec.parameters }}
+   {{ $name }}: {{ $value }}
+   {{- end }}
+{{- end }}
+volumeBindingMode: {{ $spec.volumeBindingMode | default "Immediate" }}
+allowVolumeExpansion: {{ $spec.allowVolumeExpansion | default true }}
+{{- if $spec.mountOptions }}
+mountOptions:
+    {{- range $name, $value := $spec.mountOptions }}
+    {{- if $value }}
+    - {{ $name }}={{ $value }}
+    {{- else }}
+    - {{ $name }}
+    {{- end }}
+    {{- end }}
+{{-end }}
+{{- end }}
